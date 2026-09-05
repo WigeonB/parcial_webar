@@ -4,21 +4,27 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>LUMEN | Lámpara Minimalista en WebAR</title>
+  <title>LUMEN | Lámpara LED AuraGlow - Experiencia WebAR</title>
 
+  <!-- Componente Model Viewer -->
   <script
     type="module"
     src="https://ajax.googleapis.com/ajax/libs/model-viewer/4.1.0/model-viewer.min.js">
   </script>
 
+  <!-- Generador de Código QR -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
   <style>
     :root {
-      --color-principal: #1a1a1a;
+      --color-principal: #111111;
       --color-secundario: #ffffff;
-      --color-gris: #f4f4f5;
+      --color-gris-claro: #f8f9fa;
+      --color-gris-medio: #e9ecef;
       --color-promocion: #d71920;
+      --color-exito: #28a745;
+      --sombra: 0 10px 30px rgba(0,0,0,0.08);
+      --radio-borde: 16px;
     }
 
     * {
@@ -28,48 +34,67 @@
     }
 
     body {
-      font-family: Arial, Helvetica, sans-serif;
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
       background-color: var(--color-secundario);
       color: var(--color-principal);
       line-height: 1.6;
     }
 
+    /* Header Promocional */
+    .top-banner {
+      background-color: var(--color-promocion);
+      color: white;
+      text-align: center;
+      padding: 8px;
+      font-size: 0.85rem;
+      font-weight: bold;
+      letter-spacing: 0.5px;
+    }
+
     header {
       background-color: var(--color-principal);
       color: var(--color-secundario);
-      padding: 20px;
+      padding: 25px 20px;
       text-align: center;
     }
 
     header h1 {
-      font-size: 2rem;
-      letter-spacing: 3px;
+      font-size: 2.2rem;
+      letter-spacing: 4px;
+      font-weight: 800;
+    }
+
+    header p {
+      color: #aaa;
+      font-size: 0.95rem;
     }
 
     main {
-      width: min(1100px, 92%);
-      margin: 35px auto;
+      width: min(1150px, 92%);
+      margin: 40px auto;
     }
 
+    /* Grid del Producto */
     .producto {
       display: grid;
       grid-template-columns: 1.1fr 0.9fr;
-      gap: 35px;
-      align-items: center;
+      gap: 40px;
+      align-items: start;
     }
 
-    .visor {
-      min-height: 500px;
-      background-color: var(--color-gris);
-      border-radius: 18px;
-      overflow: hidden;
+    .visor-container {
       position: relative;
+      background-color: var(--color-gris-claro);
+      border-radius: var(--radio-borde);
+      overflow: hidden;
+      border: 1px solid var(--color-gris-medio);
+      box-shadow: var(--sombra);
     }
 
     model-viewer {
       width: 100%;
-      height: 500px;
-      background-color: var(--color-gris);
+      height: 520px;
+      background-color: var(--color-gris-claro);
     }
 
     .ar-button {
@@ -79,158 +104,293 @@
       transform: translateX(-50%);
       border: none;
       border-radius: 30px;
-      padding: 14px 24px;
+      padding: 14px 28px;
       background-color: var(--color-principal);
       color: var(--color-secundario);
-      font-size: 1rem;
+      font-size: 0.95rem;
       font-weight: bold;
       cursor: pointer;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .ar-button:hover {
+      background-color: #333;
+      transform: translateX(-50%) scale(1.03);
+    }
+
+    /* Columna de Información */
+    .informacion {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .tag-destacado {
+      align-self: flex-start;
+      background-color: #e6f4ea;
+      color: #137333;
+      font-size: 0.8rem;
+      font-weight: bold;
+      padding: 4px 12px;
+      border-radius: 20px;
     }
 
     .informacion h2 {
-      font-size: 2.3rem;
-      margin-bottom: 15px;
+      font-size: 2.4rem;
+      line-height: 1.2;
     }
 
     .descripcion {
       font-size: 1.05rem;
-      margin-bottom: 20px;
+      color: #555;
     }
 
     .beneficios {
-      margin: 20px 0;
-      padding-left: 22px;
+      list-style: none;
+      margin: 10px 0;
+    }
+
+    .beneficios li {
+      margin-bottom: 8px;
+      position: relative;
+      padding-left: 25px;
+      font-size: 0.98rem;
+    }
+
+    .beneficios li::before {
+      content: "✓";
+      position: absolute;
+      left: 0;
+      color: var(--color-exito);
+      font-weight: bold;
+    }
+
+    /* Heurístico de Anclaje */
+    .anclaje-box {
+      background-color: #fff9f9;
+      border: 1px dashed var(--color-promocion);
+      padding: 18px;
+      border-radius: 12px;
+      margin: 10px 0;
     }
 
     .precio-anterior {
-      color: #666666;
-      font-size: 1.1rem;
+      color: #777;
+      font-size: 1.05rem;
       text-decoration: line-through;
+    }
+
+    .precio-contenedor {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-top: 4px;
     }
 
     .precio-actual {
       color: var(--color-promocion);
-      font-size: 2rem;
+      font-size: 2.2rem;
+      font-weight: 800;
+    }
+
+    .descuento-badge {
+      background-color: var(--color-promocion);
+      color: white;
+      font-size: 0.85rem;
       font-weight: bold;
-      margin-bottom: 20px;
+      padding: 4px 10px;
+      border-radius: 6px;
+    }
+
+    /* Call to Action */
+    .cta-container {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
     }
 
     .cta {
-      display: inline-block;
+      display: block;
+      text-align: center;
       background-color: var(--color-principal);
       color: var(--color-secundario);
-      padding: 15px 28px;
+      padding: 18px;
       border-radius: 30px;
       text-decoration: none;
       font-weight: bold;
-      transition: opacity 0.2s ease;
+      font-size: 1.1rem;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.15);
     }
 
     .cta:hover {
-      opacity: 0.8;
+      background-color: var(--color-promocion);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(215, 25, 32, 0.3);
     }
 
-    .qr-section {
-      margin-top: 45px;
-      padding: 30px;
-      background-color: var(--color-gris);
-      border-radius: 18px;
+    /* Garantías */
+    .garantias {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
       text-align: center;
+      font-size: 0.75rem;
+      color: #666;
+      margin-top: 10px;
+      padding-top: 15px;
+      border-top: 1px solid var(--color-gris-medio);
+    }
+
+    /* Sección QR */
+    .qr-section {
+      margin-top: 50px;
+      padding: 40px 20px;
+      background-color: var(--color-gris-claro);
+      border-radius: var(--radio-borde);
+      border: 1px solid var(--color-gris-medio);
+      text-align: center;
+    }
+
+    .qr-section h3 {
+      font-size: 1.5rem;
+      margin-bottom: 10px;
+    }
+
+    .qr-section p {
+      color: #666;
+      max-width: 500px;
+      margin: 0 auto;
+      font-size: 0.95rem;
     }
 
     #qrCode {
       display: flex;
       justify-content: center;
-      margin: 20px auto;
+      margin: 25px auto 0 auto;
     }
 
     footer {
-      margin-top: 40px;
+      margin-top: 60px;
       padding: 25px;
       background-color: var(--color-principal);
       color: var(--color-secundario);
       text-align: center;
+      font-size: 0.85rem;
     }
 
-    @media (max-width: 800px) {
+    /* Responsivo */
+    @media (max-width: 850px) {
       .producto {
         grid-template-columns: 1fr;
       }
 
-      .visor,
       model-viewer {
-        min-height: 400px;
-        height: 400px;
+        height: 420px;
       }
 
       .informacion h2 {
-        font-size: 1.8rem;
+        font-size: 2rem;
+      }
+
+      .garantias {
+        grid-template-columns: 1fr;
+        gap: 8px;
       }
     }
   </style>
 </head>
 
 <body>
+
+  <div class="top-banner">
+    ⚡ Oferta por tiempo limitado: Envío gratis a todo el país por compra hoy
+  </div>
+
   <header>
     <h1>LUMEN</h1>
-    <p>Iluminación y diseño de vanguardia</p>
+    <p>Diseño escandinavo e iluminación inteligente</p>
   </header>
 
   <main>
     <section class="producto">
-      <div class="visor">
+      
+      <!-- Visor de Modelo 3D / WebAR -->
+      <div class="visor-container">
         <model-viewer
           src="lampara.glb"
-          alt="Modelo tridimensional de una lámpara de diseño"
+          alt="Modelo 3D interactivo de la lámpara AuraGlow"
           ar
           ar-modes="webxr scene-viewer quick-look"
           ar-placement="floor"
           ar-scale="auto"
           camera-controls
           auto-rotate
-          shadow-intensity="1.2"
-          exposure="1"
+          shadow-intensity="1.5"
+          exposure="1.1"
           touch-action="pan-y">
 
           <button class="ar-button" slot="ar-button" type="button">
-            Ver en mi espacio
+            <span>📱</span> Ver en mi espacio (AR)
           </button>
         </model-viewer>
       </div>
 
+      <!-- Información Comercial del Producto -->
       <div class="informacion">
-        <h2>Lámpara LED AuraGlow</h2>
+        <span class="tag-destacado">★ Lo más vendido en decoración</span>
+        <h2>Lámpara LED "AuraGlow"</h2>
 
         <p class="descripcion">
-          Lámpara de mesa inteligente con acabado nórdico y luz cálida graduada, 
-          diseñada para transformar la atmósfera de tus espacios de trabajo o descanso.
+          Crea la atmósfera perfecta. Diseñada con un cuerpo de aluminio satinado y tecnología LED anti-fatiga visual con regulación de intensidad táctil.
         </p>
 
         <ul class="beneficios">
-          <li>Beneficio principal: Iluminación de bajo consumo que reduce la fatiga visual.</li>
-          <li>Encendido táctil con 3 niveles de intensidad regulable.</li>
-          <li>Diseño ergonómico, estilizado y compatible con cualquier tipo de decoración.</li>
+          <li><strong>Beneficio Principal:</strong> Luz regulable de bajo consumo que cuida tu visión.</li>
+          <li>Encendido táctil de 3 niveles (Luz cálida, neutra y fría).</li>
+          <li>Batería recargable USB-C integrada con hasta 12h de autonomía.</li>
         </ul>
 
-        <!-- Heurístico de anclaje -->
-        <p class="precio-anterior">Valor de referencia: $399.900 COP</p>
-        <p class="precio-actual">Precio especial WebAR: $279.900 COP</p>
+        <!-- Aplicación Heurístico de Anclaje -->
+        <div class="anclaje-box">
+          <p class="precio-anterior">Valor de referencia: $399.900 COP</p>
+          <div class="precio-contenedor">
+            <span class="precio-actual">$279.900 COP</span>
+            <span class="descuento-badge">-30% HOY</span>
+          </div>
+          <p style="font-size: 0.8rem; color: #888; margin-top: 5px;">Precio exclusivo para compras desde la experiencia WebAR.</p>
+        </div>
 
-        <a
-          class="cta"
-          href="https://www.mercadolibre.com.co"
-          target="_blank"
-          rel="noopener noreferrer">
-          Comprar ahora
-        </a>
+        <!-- Botón de Acción Principal (CTA) -->
+        <div class="cta-container">
+          <a
+            class="cta"
+            href="https://www.mercadolibre.com.co"
+            target="_blank"
+            rel="noopener noreferrer">
+            Comprar ahora
+          </a>
+        </div>
+
+        <!-- Indicadores de Confianza -->
+        <div class="garantias">
+          <div>🚚 <strong>Envío Gratis</strong><br>En 24/48 horas</div>
+          <div>🛡️ <strong>Garantía</strong><br>2 años de cobertura</div>
+          <div>🔒 <strong>Pago Seguro</strong><br>múltiples medios</div>
+        </div>
+
       </div>
     </section>
 
+    <!-- Generador y Sección de Código QR -->
     <section class="qr-section">
-      <h2>Visualiza la lámpara en tu espacio</h2>
+      <h3>¿Estás desde un computador?</h3>
       <p>
-        Escanea el código QR desde tu celular para proyectar la lámpara en tu escritorio 
-        o mesa usando Realidad Aumentada.
+        Escanea este código QR con la cámara de tu celular para abrir esta misma página y proyectar la lámpara en 3D sobre tu escritorio usando Realidad Aumentada.
       </p>
 
       <div id="qrCode"></div>
@@ -238,14 +398,17 @@
   </main>
 
   <footer>
-    <p>Lumen · Experiencia comercial WebAR</p>
+    <p>LUMEN Studio © 2026 · Experiencia comercial orientada a WebAR</p>
   </footer>
 
   <script>
+    // Generación dinámica del QR apuntando a la URL publica en GitHub Pages
     new QRCode(document.querySelector("#qrCode"), {
       text: window.location.href,
-      width: 180,
-      height: 180,
+      width: 160,
+      height: 160,
+      colorDark : "#111111",
+      colorLight : "#ffffff",
       correctLevel: QRCode.CorrectLevel.H
     });
   </script>
